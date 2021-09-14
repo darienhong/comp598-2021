@@ -1,5 +1,6 @@
 import pandas as pd 
 import numpy as np
+import csv
 
 def data_collection(): 
     data = pd.read_csv('../data/IRAhandle_tweets_1.csv', nrows=10000)
@@ -12,11 +13,24 @@ def data_collection():
     print(data_question)
     data_question.to_csv('new_data.tsv', sep='\t', index=False)
 
-  #  contains_trump = data_question['content'].str.contains('[^a-zA-Z]Trump') or data['content'].str.contains('\s+Trump')
-    data_question['trump_mention'] = np.where(data_question['content'].str.contains("Trump"), True, False)
-    print(data_question)
+  
+    data_question['trump_mention'] = np.where(data_question['content'].str.contains('\\bTrump\\b'), True, False)
     header = ["tweet_id", "publish_date", "content", "trump_mention"]
-    data_question.to_csv('dataset.tsv', sep='\t', columns = header)
+    data_question.to_csv('../dataset.tsv', sep='\t', index=False, columns = header)
+    frac = len(data_question[data_question['trump_mention'] == True])  / len(data_question)
+    print(len(data_question))
+    print(frac)
+    save_results(frac)
+
+
+def save_results(frac): 
+    with open("../results.tsv", "w") as file: 
+        tsv_writer = csv.writer(file, delimiter="\t")
+        tsv_writer.writerow(['result', 'value'])
+        tsv_writer.writerow(['frac-trump-mentions', '%.3f'%(frac)])
+
+
+
 
 
 
