@@ -11,12 +11,12 @@ def data_collection():
 
     data = pd.read_csv(sys.argv[3]) 
     total = len(data)
-    count_twilight_sparkle = len(data[data['pony'] == "Twilight Sparkle"])
-    count_applejack = len(data[data['pony'] == "Applejack"])
-    count_rarity = len(data[data['pony'] == "Rarity"])
-    count_pinkie_pie = len(data[data['pony'] == "Pinkie Pie"])
-    count_rainbow_dash = len(data[data['pony'] == "Rainbow Dash"])
-    count_fluttershy = len(data[data['pony'] == "Fluttershy"])
+    count_twilight_sparkle = len(data[data['pony'].str.casefold() == "Twilight Sparkle".casefold()])
+    count_applejack = len(data[data['pony'].str.casefold() == "Applejack".casefold()])
+    count_rarity = len(data[data['pony'].str.casefold() == "Rarity".casefold()])
+    count_pinkie_pie = len(data[data['pony'].str.casefold() == "Pinkie Pie".casefold()])
+    count_rainbow_dash = len(data[data['pony'].str.casefold() == "Rainbow Dash".casefold()])
+    count_fluttershy = len(data[data['pony'].str.casefold() == "Fluttershy".casefold()])
 
     verbosity_twilight_sparkle = count_twilight_sparkle / total
     verbosity_applejack = count_applejack / total
@@ -60,30 +60,6 @@ def data_collection():
             "fluttershy": round(verbosity_fluttershy, 3)
         }
     }
-
-    '''
-    json_result['count'] = { 
-        "twilight sparkle": count_twilight_sparkle, 
-        "applejack" : count_applejack, 
-        "rarity": count_rarity, 
-        "pinkie pie": count_pinkie_pie, 
-        "rainbow dash": count_rainbow_dash, 
-        "fluttershy": count_fluttershy
-    },
-
-    json_result['verbosity'] = { 
-        "twilight sparkle": verbosity_twilight_sparkle, 
-        "applejack": verbosity_applejack, 
-        "rarity": verbosity_rarity, 
-        "pinkie pie": verbosity_pinkie_pie, 
-        "rainbow dash": verbosity_rainbow_dash, 
-        "fluttershy": verbosity_fluttershy
-    }
-
-     with open(sys.argv[1], 'w') as outfile: 
-        json.dump(json_result, outfile, indent=4)
-
-'''
 
     with open(sys.argv[2], 'w') as outfile: 
             json.dump(json_result, outfile, indent=4)
