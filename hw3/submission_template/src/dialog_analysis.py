@@ -4,10 +4,12 @@ import sys
 import json
 
 def data_collection(): 
+    '''
     n = len(sys.argv)
     print("Total arguments passed: ", n)
     print("\nname of python script: ", sys.argv[0])
-    print("\n dialog file: ", sys.argv[3])  
+    print("\n dialog file: ", sys.argv[3]) 
+    ''' 
 
     data = pd.read_csv(sys.argv[3]) 
     total = len(data)
@@ -25,22 +27,6 @@ def data_collection():
     verbosity_rainbow_dash = count_rainbow_dash / total
     verbosity_fluttershy = count_fluttershy / total
 
-    print(len(data))
-    print(count_twilight_sparkle)
-    print(count_applejack)
-    print(count_rarity)
-    print(count_pinkie_pie)
-    print(count_rainbow_dash)
-    print(count_fluttershy)
-    print(len(data))
-    print("------------------------")
-    print(verbosity_twilight_sparkle)
-    print(verbosity_applejack)
-    print(verbosity_rarity)
-    print(verbosity_pinkie_pie)
-    print(verbosity_rainbow_dash)
-    print(verbosity_fluttershy)
-
     json_result = {
         "count": { 
             "twilight sparkle": count_twilight_sparkle, 
@@ -52,23 +38,17 @@ def data_collection():
         },
 
         "verbosity": { 
-            "twilight sparkle": round(verbosity_twilight_sparkle, 3), 
-            "applejack": round(verbosity_applejack, 3), 
-            "rarity": round(verbosity_rarity, 3), 
-            "pinkie pie": round(verbosity_pinkie_pie, 3), 
-            "rainbow dash": round(verbosity_rainbow_dash, 3), 
-            "fluttershy": round(verbosity_fluttershy, 3)
+            "twilight sparkle": round(verbosity_twilight_sparkle, 2), 
+            "applejack": round(verbosity_applejack, 2), 
+            "rarity": round(verbosity_rarity, 2), 
+            "pinkie pie": round(verbosity_pinkie_pie, 2), 
+            "rainbow dash": round(verbosity_rainbow_dash, 2), 
+            "fluttershy": round(verbosity_fluttershy, 2)
         }
     }
 
     with open(sys.argv[2], 'w') as outfile: 
             json.dump(json_result, outfile, indent=4)
-
-
-
-   
-
-
 
 
 if __name__ == "__main__": 
