@@ -85,8 +85,7 @@ def save_data(unique_zips, zip_info, monthly_avg_all):
     # change np arrays to list for json compatibility
     new_zip_dict = {k: v.tolist() for k, v in zip_info.items()}
 
-    # reformatting unique_zips
-    unique_zips[0] = '83'
+    # reformatting unique_zips for dashboard simplicity
     tuple_zips = [(x, x) for x in unique_zips]
 
     # export
