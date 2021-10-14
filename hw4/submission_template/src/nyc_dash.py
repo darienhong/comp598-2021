@@ -72,4 +72,4 @@ plot.y_range.start = 0
 
 # load dashboard 
 curr_doc.theme = 'contrast'
-curr_doc.add_root(row(column(dropdown1, dropdown2), plot))
+curr_doc.add_root(column(dropdown1, dropdown2, plot))
