@@ -26,7 +26,7 @@ def data_collection():
 
 
     # keep data points where close date is after the open data 
-    data_clean = data_avail[data_avail[1] < data_avail[2]]
+    data_clean = data_avail[data_avail[1] <= data_avail[2]]
 
     # assign column names and reset index (pretty print)
     data_clean.columns = ['Open', 'Closed', 'ZIP']
