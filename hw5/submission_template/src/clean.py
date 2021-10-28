@@ -24,14 +24,14 @@ def filter_invalid_json(input):
                 pass 
     return list_json
 
-# filter total_count value
+# filter total_count values that are not int, float, string or cannot be castable to int
 def filter_count(list_json): 
     key_val='total_count'
     for dict in list_json: 
         try: 
             if key_val in dict: 
                 assert isinstance(dict[key_val], (int, float, str))
-                dict[key_val] = int(float(dict[key_val]))
+                dict[key_val] = int(dict[key_val])
         except: 
             list_json.remove(dict)
     return list_json
@@ -48,6 +48,7 @@ def filter_author_valid(list_json):
 
     return list_json
 
+# filter entries that do not have 'title' or 'title_text' field
 def filter_title(list_json): 
     key_val=('title', 'title_text')
     for dict in list_json: 
@@ -62,6 +63,7 @@ def filter_title(list_json):
             list_json.remove(dict)
     return list_json
 
+# process the tags, separate them into individual words 
 def filter_tags(list_json): 
     key_val='tags'
     for dict in list_json: 
@@ -95,8 +97,7 @@ def main():
 
     with open(output_str, 'w') as f:
         f.write('\n'.join(json.dumps(i) for i in list_json))
-
-
+        
 if __name__ == "__main__": 
     main()
 
