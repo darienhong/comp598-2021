@@ -1,7 +1,7 @@
 import json 
 import argparse
 import ast
-from datetime import datetime
+from datetime import datetime, timezone
 
 def get_args(): 
     parser = argparse.ArgumentParser() 
@@ -64,20 +64,21 @@ def filter_title(list_json):
     return list_json
 
 # process the tags, separate them into individual words 
-def filter_tags(list_json): 
+def filter_tags_split(list_json): 
     key_val='tags'
     for dict in list_json: 
         if key_val in dict: 
             dict[key_val] = [*{word for line in dict[key_val] for word in line.split()}]
     return list_json
 
-def filter_datetime(list_json): 
+# convert time to UTC timezome
+def filter_datetime_utc(list_json): 
     key_val='createdAt'
     for dict in list_json: 
         try: 
              if key_val in dict: 
-                 test = datetime.strptime(dict[key_val], '%Y-%m-%dT%H:%M:%S%z')
-                 dict[key_val] = test.isoformat()
+                 temp = datetime.strptime(dict[key_val], '%Y-%m-%dT%H:%M:%S%z')       # convert into ISO 8601
+                 dict[key_val] = temp.astimezone(timezone.utc).isoformat()            # convert to UTC timezone
         except:
             list_json.remove(dict)
     return list_json
@@ -92,8 +93,8 @@ def main():
     list_json = filter_count(list_json)
     list_json = filter_author_valid(list_json)
     list_json = filter_title(list_json)
-    list_json = filter_tags(list_json)
-    list_json = filter_datetime(list_json)
+    list_json = filter_tags_split(list_json)
+    list_json = filter_datetime_utc(list_json)
 
     with open(output_str, 'w') as f:
         f.write('\n'.join(json.dumps(i) for i in list_json))

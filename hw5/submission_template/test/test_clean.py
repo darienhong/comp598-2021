@@ -4,7 +4,6 @@ from datetime import datetime
 import json
 import ast
 import os, sys
-from src.clean import filter_tags, filter_invalid_json
 
 parentdir = Path(__file__).parents[1]
 sys.path.append(parentdir)
