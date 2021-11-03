@@ -2,11 +2,9 @@
 Collect reddit data to compute the average title length
 '''
 
-
 import pandas as pd 
 import requests
 import json
-from requests.api import post, request 
 from requests.auth import HTTPBasicAuth
 
 # authorization
@@ -24,7 +22,7 @@ def get_oauth():
 
     return headers 
 
-
+# collect posts based on subreddits given
 def collect_reddit_posts(subred_sub, subred_posts, headers): 
     subscriber_list = [] 
     post_list = []
@@ -39,7 +37,8 @@ def collect_reddit_posts(subred_sub, subred_posts, headers):
 
     return subscriber_list, post_list
 
-def save_json(file, data):
+# save data to json file
+def export_json(file, data):
     with open(file,'w') as f: 
         for i in range (0, 10): 
             for j in range(0, 100):
@@ -54,10 +53,12 @@ def main():
     # authenticate
     headers = get_oauth() 
 
+    # collect the posts 
     subscriber_list, post_list = collect_reddit_posts(subred_sub, subred_posts, headers)
 
-    save_json('../sample1.json', subscriber_list)
-    save_json('../sample2.json', post_list)
+    # save the posts to json 
+    export_json('../sample1.json', subscriber_list)
+    export_json('../sample2.json', post_list)
 
 
 if __name__ == "__main__": 
