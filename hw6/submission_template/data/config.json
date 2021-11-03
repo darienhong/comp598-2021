@@ -1,4 +1,4 @@
 {
-    "cache_dir": "../data/wdw_cache",
-    "target_people": ["victoria-pedretti", "henry-cavill", "miley-cyrus", "jasmine-pilchard-gosnell"]
+    "cache_dir": "data/wdw_cache",
+    "target_people": ["selena-gomez", "zendaya", "timothee-chalamet", "justin-bieber"]
 }

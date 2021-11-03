@@ -25,7 +25,7 @@ def main():
     df = load_data(file)
 
     # print the mean post title length
-    print(df.str.len().mean())
+    print(round(df.str.len().mean(), 2))
 
 
 if __name__ == "__main__": 

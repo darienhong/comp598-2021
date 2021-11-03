@@ -1,11 +1,16 @@
+''' 
+Collect relationship data from Whosdatedwho site
+'''
+
 from  bs4 import BeautifulSoup
 import json 
 import argparse
 import requests
 import os.path
 import re
+import pathlib
 
-
+# get arguments
 def get_args(): 
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', type=str)
@@ -13,6 +18,7 @@ def get_args():
 
     return parser.parse_args().config, parser.parse_args().output
 
+# load config file to get cache directory and target people
 def load_config_file(config_file): 
     with open(config_file, 'r') as f: 
         cfg = json.load(f)
@@ -21,7 +27,12 @@ def load_config_file(config_file):
 
     return dir_cache, target_people
 
+# collect the relationships of the target people
 def collect_relationships(dir_cache, person, json_output): 
+
+    pathlib.Path(dir_cache).mkdir(parents=True, exist_ok=True)
+    
+    # if file doesn't exist in cache, create it and write contents
     if not os.path.isfile(f'{dir_cache}/{person}'):
         open(f'{dir_cache}/{person}', 'wb').write(requests.get(f'https://www.whosdatedwho.com/dating/{person}').content)
 
