@@ -41,8 +41,14 @@ def collect_relationships(dir_cache, person, json_output):
     soup = BeautifulSoup(open(f'{dir_cache}/{person}', 'r', encoding="utf8"), 'html.parser')
     div_person = soup.find('div', class_='ff-panel clearfix')
 
-    # remove content after the "about" section
-    h4_about = div_person.find('h4', class_='ff-auto-about')
+    # incorrect or non-existing person is put in
+    try:
+        h4_about = div_person.find('h4', class_='ff-auto-about')
+    except AttributeError:
+        json_output[person] = []
+        return
+
+    # keep only content that we want
     for item in h4_about.find_next_siblings():
         item.decompose()
     h4_about.decompose()
