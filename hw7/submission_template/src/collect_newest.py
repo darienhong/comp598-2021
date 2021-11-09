@@ -27,7 +27,7 @@ def get_oauth():
     return headers 
 
 def collect_reddit_posts(subreddit, headers): 
-    post_request = requests.get(f'https://oauth.reddit.com/r/{subreddit}/new?limit=100', headers=headers)
+    post_request = requests.get(f'https://oauth.reddit.com{subreddit}/new?limit=100', headers=headers)
     new_posts = post_request.json()['data']['children']
     return new_posts
 
@@ -46,7 +46,7 @@ def main():
 
 if __name__ == "__main__": 
     main() 
-    
+
 
 
 
