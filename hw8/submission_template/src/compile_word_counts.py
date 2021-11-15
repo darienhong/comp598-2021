@@ -2,6 +2,7 @@ import argparse
 import json 
 import pandas as pd
 
+# get commandline arguments 
 def get_args(): 
     parser = argparse.ArgumentParser() 
     parser.add_argument('-o', '--output', type=str)
@@ -9,53 +10,45 @@ def get_args():
 
     return parser.parse_args().output, parser.parse_args().dialog
 
-def count_words(dialog_file, stopwords, pony): 
-    pony_json =  '{}'
-    x = json.loads(pony_json)
-    data = pd.read_csv(dialog_file, index_col=False)
-    df_twilight_sparkle = (data[data['pony'].str.casefold() == pony.casefold()])['dialog'].str.replace('[^\w\s]',' ')
-    df_twilight_sparkle = df_twilight_sparkle.str.lower()
-    df_twilight_sparkle = df_twilight_sparkle.str.replace('[^a-zA-Z\s]+', '')
-  #   print(df_twilight_sparkle)
-    new_df = df_twilight_sparkle.str.split(expand=True).stack().value_counts().reset_index()
-    new_df.columns = ['word', 'frequency']
-    filtered_df = new_df[(~new_df['word'].isin(stopwords)) & (new_df['frequency'] >= 5)]
-  
+# save word counts to given output file in json format
+def save_json(output_file, word_count): 
+    with open(output_file, 'w') as f: 
+        json.dump(word_count, f, indent=4)
 
-    for index, row in filtered_df.iterrows():
-        temp = {row['word']: row['frequency']}
-        x.update(temp)
-    
-  #  print(json.dumps(x))
-    return x 
-    
-    # print(json.dumps(parsed, indent=4))
+# get word count for all ponies 
+def filter_word_list(data, stopwords): 
+    list_diag = data['dialog'].to_list()
+    all_words = [word for sublist in list_diag for word in sublist if word not in stopwords and word.isalpha()]
+    wordcount = pd.Series(all_words).value_counts()
+    wordcount = wordcount[wordcount >= 5]
 
- #   print(filtered_df)
+    return wordcount.index.tolist()
 
+# get word counts
+def count_words(dialog_file, word_count, stopwords, pony_list, no_punc): 
+    data = pd.read_csv(dialog_file, encoding='utf-8')[['pony', 'dialog']]
+    data = data[data['pony'].str.lower().isin(pony_list)]
+    data['dialog'] = data['dialog'].str.lower().str.translate(no_punc).str.split()
 
-def load_stop_words(): 
-    stopwords = []
-    my_file = open('../data/stopwords.txt', 'r')
-    lines = my_file.readlines()
-    for word in lines: 
-        stopwords.append(word.replace("\n", ""))
-    return stopwords
+    word_list = filter_word_list(data, stopwords)
+    # get word counts for each pony
+    for pony in pony_list: 
+        list_d_pony = data[data['pony'].str.lower() == pony]['dialog'].to_list()
+        words_p = [word for dialog in list_d_pony for word in dialog if word in word_list and word.isalpha()]
+        word_count[pony] = pd.Series(words_p).value_counts().to_dict()
 
 def main(): 
-    output_json = json.loads('{}')
-    
+    word_count = {}    
     output_file, dialog_file = get_args()
-    pony_list_caps = ["Twilight Sparkle", "Applejack", "Rarity", "Pinkie Pie", "Rainbow Dash", "Fluttershy"]
-    pony_list = ["twilight sparkle", "applejack", "rarity", "pinkie pie", "rainbow dash", "fluttershy"]
-    stopwords = load_stop_words()
-    for json_pony, pony in zip(pony_list, pony_list_caps): 
-        j = count_words(dialog_file, stopwords, pony)
-        temp_json = {json_pony: j}
-        output_json.update(temp_json)
+    no_punc = str.maketrans('()[],-.?!:;#&+0123456789<>', ' ' * 26)
+    pony_list = ['twilight sparkle', 'applejack', 'rarity', 'pinkie pie', 'rainbow dash', 'fluttershy']
+    
+    # load stop words 
+    with open('../data/stopwords.txt', 'r') as file: 
+        stopwords = file.read().splitlines()[6:]
 
-    with open(output_file, 'w') as f: 
-        json.dump(output_json, f, indent=4)
+    count_words(dialog_file, word_count, stopwords, pony_list, no_punc)
+    save_json(output_file, word_count)
 
 
 if __name__ == "__main__": 
