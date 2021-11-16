@@ -37,6 +37,19 @@ def count_words(dialog_file, word_count, stopwords, pony_list, no_punc):
         words_p = [word for dialog in list_d_pony for word in dialog if word in word_list and word.isalpha()]
         word_count[pony] = pd.Series(words_p).value_counts().to_dict()
 
+def compute_with_args(dialog_file, output_file, stopwords_file): 
+    word_count = {} 
+    no_punc = str.maketrans('()[],-.?!:;#&+0123456789<>', ' ' * 26)
+    pony_list = ['twilight sparkle', 'applejack', 'rarity', 'pinkie pie', 'rainbow dash', 'fluttershy']
+    
+    # load stop words 
+    with open(stopwords_file, 'r') as file: 
+        stopwords = file.read().splitlines()[6:]
+
+    count_words(dialog_file, word_count, stopwords, pony_list, no_punc)
+    save_json(output_file, word_count)
+
+
 def main(): 
     word_count = {}    
     output_file, dialog_file = get_args()
@@ -49,6 +62,7 @@ def main():
 
     count_words(dialog_file, word_count, stopwords, pony_list, no_punc)
     save_json(output_file, word_count)
+
 
 
 if __name__ == "__main__": 
