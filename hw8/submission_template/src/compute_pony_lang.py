@@ -20,28 +20,42 @@ def pretty_print_json(output):
     data_json = sub(r'\n {4}\]', ']', data_json)
     print(data_json)
 
+def get_tfidfs_words(tf_all, pony_list, num_words): 
+    output = {}
+     # calculate tf-idf for each word for each pony
+    for pony in pony_list: 
+        list_w_tf = []
+        for word in tf_all[pony].keys(): 
+            tf_idf = tf_all[pony][word] * log10(len(pony_list) / len([0 for p in pony_list if word in tf_all[p].keys()]))
+            list_w_tf.append((word, tf_idf))
+
+        # sort by tf-idf values given a pair of word and tf-idf ([0] and [1] respectively)
+        output[pony] = pd.DataFrame(list_w_tf).sort_values(by=[1], ascending=False)[0].to_list()[0:num_words]
+
+    return output
+
+# function for test to compute just the tf-idfs
+def compute_tf_idf(twc): 
+    output = {}
+    for pony in twc.keys():
+        dic_pony = {}
+        for word in twc[pony]:
+            tf_idf = twc[pony][word] * log10(len(twc) / len([0 for p in twc.keys() if word in twc[p].keys()]))
+            dic_pony[word] = round(tf_idf, 11)
+        output[pony] = dic_pony
+    
+    return output
+
 def main(): 
     word_counts, num_words = get_args()
     pony_list = ['twilight sparkle', 'applejack', 'rarity', 'pinkie pie', 'rainbow dash', 'fluttershy']
-    num_ponies = len(pony_list)
     output = {}
 
     # load the word counts
     with open(word_counts, 'r') as f: 
         tf_all = json.load(f)
     
-    # calculate tf-idf for each word for each pony
-    for pony in pony_list: 
-        list_w_tf = []
-        for word in tf_all[pony].keys(): 
-            tf_idf = tf_all[pony][word] * log10(num_ponies / len([0 for p in pony_list if word in tf_all[p].keys()]))
-            list_w_tf.append((word, tf_idf))
-
-        # sort words by tf-idf value in descending order
-        temp = pd.DataFrame(list_w_tf).sort_values(by=[1], ascending=False)
-        # get the top num_words number of words by tf-idf
-        output[pony] = temp[0].to_list()[0:num_words]
-
+    output = get_tfidfs_words(tf_all, pony_list, num_words)
     pretty_print_json(output)
     
 
