@@ -47,7 +47,7 @@ def count_words(data, pony_list, word_list):
     # get word counts for each pony
     for pony in pony_list:
         list_d_pony = data[data['pony'].str.lower() == pony]['dialog'].to_list()
-        words_p = [word for dialog in list_d_pony for word in dialog if word in word_list and word.isalpha()]
+        words_p = [word for dialog in list_d_pony for word in dialog if word in word_list]
         word_count[pony] = pd.Series(words_p).value_counts().to_dict()
 
     return word_count
@@ -63,7 +63,7 @@ def compute_word_count_dic(dialog_file, stopwords_file):
 
 def main():
     output_file, dialog_file = get_args()
-    no_punc = str.maketrans('()[],-.?!:;#&+0123456789<>', ' ' * 26)
+    no_punc = str.maketrans('()[],-.?!:;#&', ' ' * 13)
     pony_list = ['twilight sparkle', 'applejack', 'rarity','pinkie pie', 'rainbow dash', 'fluttershy']
     stopwords_path = os.path.join(parentdir, 'data', 'stopwords.txt')
 
