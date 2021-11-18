@@ -5,8 +5,7 @@ import json
 parentdir = Path(__file__).parents[1]
 sys.path.append(parentdir)
 from src.compile_word_counts import compute_word_count_dic
-import src.compile_word_counts as compute_word_counts
-import src.compute_pony_lang as compute_pony_lang 
+from src.compute_pony_lang import compute_tf_idf
 
 
 class TasksTest(unittest.TestCase):
@@ -21,12 +20,14 @@ class TasksTest(unittest.TestCase):
         with open(self.mock_dialog, 'r') as f1, open(self.true_word_counts, 'r') as f2: 
             twc = json.load(f2)
             output = compute_word_count_dic(f1, self.stopwords_path)
-     
         self.assertEqual(output, twc)
 
     def test_task2(self):
-        # use self.true_word_counts self.true_tf_idfs; REMOVE self.assertTrue(True) and write your own assertion, i.e. self.assertEquals(...)
-        self.assertTrue(True)
+        with open(self.true_word_counts, 'r') as f1, open(self.true_tf_idfs, 'r') as f2:
+            twc = json.load(f1)
+            true_tf_idfs = json.load(f2)
+            output = compute_tf_idf(twc)
+        self.assertEqual(output, true_tf_idfs)
         
     
 if __name__ == '__main__':
