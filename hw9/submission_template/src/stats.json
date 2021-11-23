@@ -2,7 +2,7 @@
     "most_connected_by_num": [
         "twilight sparkle",
         "rainbow dash",
-        "pinkie pie"
+        "applejack"
     ],
     "most_connected_by_weight": [
         "twilight sparkle",
@@ -11,7 +11,7 @@
     ],
     "most_central_by_betweenness": [
         "twilight sparkle",
-        "pinkie pie",
-        "rarity"
+        "rainbow dash",
+        "pinkie pie"
     ]
 }

@@ -1,10 +1,9 @@
 import json 
 import argparse 
 import pandas as pd
-import numpy as np 
 import networkx as nx
-from collections import Counter
 
+# get input arguments
 def get_args(): 
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str)
@@ -12,8 +11,10 @@ def get_args():
 
     return parser.parse_args().input, parser.parse_args().output
 
+# compute the status
 def compute_stats(stats_json, data): 
-    # df --> undirected graph
+
+    # create graph from dataframe 
     graph = nx.from_pandas_edgelist(data, 'source', 'target', create_using=nx.Graph(), edge_attr='weight')
     list_edge_degree = sorted([*graph.degree()], key=lambda x: x[1], reverse=True)[0:3]
     list_edge_weight = sorted([*graph.degree(weight='weight')], key=lambda x: x[1], reverse=True)[0:3]
@@ -25,6 +26,7 @@ def compute_stats(stats_json, data):
 
     return stats_json
 
+# save stats in json file 
 def save_json(output_file, stats_json):
     with open(output_file, 'w') as f1: 
         json.dump(stats_json, f1, indent=4)
@@ -33,6 +35,7 @@ def main():
     interaction_network, output_file = get_args() 
     stats_json = {}
     
+    # create dataframe from json
     with open(interaction_network, 'r') as f: 
         data = pd.json_normalize(json.load(f), sep='|').transpose()
         data[1] = data.index
